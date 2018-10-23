@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -13,9 +13,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version   $Id: $
  */
 
@@ -25,10 +26,10 @@
 require_once 'Zend/Validate/Abstract.php';
 
 /**
- * Validator for the maximum size of a file up to a max of 2GB
+ * Validator for the maximum size of a file up to a max of 2GB.
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,22 +38,22 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
     /**@#+
      * @const string Error constants
      */
-    const INI_SIZE       = 'fileUploadErrorIniSize';
-    const FORM_SIZE      = 'fileUploadErrorFormSize';
-    const PARTIAL        = 'fileUploadErrorPartial';
-    const NO_FILE        = 'fileUploadErrorNoFile';
-    const NO_TMP_DIR     = 'fileUploadErrorNoTmpDir';
-    const CANT_WRITE     = 'fileUploadErrorCantWrite';
-    const EXTENSION      = 'fileUploadErrorExtension';
-    const ATTACK         = 'fileUploadErrorAttack';
+    const INI_SIZE = 'fileUploadErrorIniSize';
+    const FORM_SIZE = 'fileUploadErrorFormSize';
+    const PARTIAL = 'fileUploadErrorPartial';
+    const NO_FILE = 'fileUploadErrorNoFile';
+    const NO_TMP_DIR = 'fileUploadErrorNoTmpDir';
+    const CANT_WRITE = 'fileUploadErrorCantWrite';
+    const EXTENSION = 'fileUploadErrorExtension';
+    const ATTACK = 'fileUploadErrorAttack';
     const FILE_NOT_FOUND = 'fileUploadErrorFileNotFound';
-    const UNKNOWN        = 'fileUploadErrorUnknown';
+    const UNKNOWN = 'fileUploadErrorUnknown';
     /**@#-*/
 
     /**
      * @var array Error message templates
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::INI_SIZE       => "The file '%value%' exceeds the defined ini size",
         self::FORM_SIZE      => "The file '%value%' exceeds the defined form size",
         self::PARTIAL        => "The file '%value%' was only partially uploaded",
@@ -62,41 +63,45 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
         self::EXTENSION      => "The extension returned an error while uploading the file '%value%'",
         self::ATTACK         => "The file '%value%' was illegal uploaded, possible attack",
         self::FILE_NOT_FOUND => "The file '%value%' was not found",
-        self::UNKNOWN        => "Unknown error while uploading the file '%value%'"
-    );
+        self::UNKNOWN        => "Unknown error while uploading the file '%value%'",
+    ];
 
     /**
-     * Internal array of files
+     * Internal array of files.
+     *
      * @var array
      */
-    protected $_files = array();
+    protected $_files = [];
 
     /**
-     * Sets validator options
+     * Sets validator options.
      *
      * The array $files must be given in syntax of Zend_File_Transfer to be checked
      * If no files are given the $_FILES array will be used automatically.
      * NOTE: This validator will only work with HTTP POST uploads!
      *
-     * @param  array $files Array of files in syntax of Zend_File_Transfer
+     * @param array $files Array of files in syntax of Zend_File_Transfer
+     *
      * @return void
      */
-    public function __construct($files = array())
+    public function __construct($files = [])
     {
         $this->setFiles($files);
     }
 
     /**
-     * Returns the array of set files
+     * Returns the array of set files.
      *
-     * @param  string $files (Optional) The file to return in detail
-     * @return array
+     * @param string $files (Optional) The file to return in detail
+     *
      * @throws Zend_Validate_Exception If file is not found
+     *
+     * @return array
      */
     public function getFiles($file = null)
     {
         if ($file !== null) {
-            $return = array();
+            $return = [];
             foreach ($this->_files as $name => $content) {
                 if ($name === $file) {
                     $return[$file] = $this->_files[$name];
@@ -109,6 +114,7 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
 
             if (count($return) === 0) {
                 require_once 'Zend/Validate/Exception.php';
+
                 throw new Zend_Validate_Exception("The file '$file' was not found");
             }
 
@@ -119,29 +125,32 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
     }
 
     /**
-     * Sets the minimum filesize
+     * Sets the minimum filesize.
      *
-     * @param  array $files The files to check in syntax of Zend_File_Transfer
+     * @param array $files The files to check in syntax of Zend_File_Transfer
+     *
      * @return Zend_Validate_File_Upload Provides a fluent interface
      */
-    public function setFiles($files = array())
+    public function setFiles($files = [])
     {
         if (count($files) === 0) {
             $this->_files = $_FILES;
         } else {
             $this->_files = $files;
         }
+
         return $this;
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by Zend_Validate_Interface.
      *
      * Returns true if and only if the file was uploaded without errors
      *
-     * @param  string $value Single file to check for upload errors, when giving null the $_FILES array
-     *                       from initialization will be used
-     * @return boolean
+     * @param string $value Single file to check for upload errors, when giving null the $_FILES array
+     *                      from initialization will be used
+     *
+     * @return bool
      */
     public function isValid($value)
     {
@@ -161,12 +170,13 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
 
         if (empty($files)) {
             $this->_error(self::FILE_NOT_FOUND);
+
             return false;
         }
 
         foreach ($files as $file => $content) {
             $this->_value = $file;
-            switch($content['error']) {
+            switch ($content['error']) {
                 case 0:
                     if (!is_uploaded_file($content['tmp_name'])) {
                         $this->_error(self::ATTACK);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -13,9 +13,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version   $Id: $
  */
 
@@ -25,10 +26,10 @@
 require_once 'Zend/Validate/Abstract.php';
 
 /**
- * Validator for the file extension of a file
+ * Validator for the file extension of a file.
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,58 +39,61 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
      * @const string Error constants
      */
     const FALSE_EXTENSION = 'fileExtensionFalse';
-    const NOT_FOUND       = 'fileExtensionNotFound';
+    const NOT_FOUND = 'fileExtensionNotFound';
 
     /**
      * @var array Error message templates
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::FALSE_EXTENSION => "The file '%value%' has a false extension",
-        self::NOT_FOUND       => "The file '%value%' was not found"
-    );
+        self::NOT_FOUND       => "The file '%value%' was not found",
+    ];
 
     /**
-     * Internal list of extensions
+     * Internal list of extensions.
+     *
      * @var string
      */
     protected $_extension = '';
 
     /**
-     * Validate case sensitive
+     * Validate case sensitive.
      *
-     * @var boolean
+     * @var bool
      */
     protected $_case = false;
 
     /**
      * @var array Error message template variables
      */
-    protected $_messageVariables = array(
-        'extension' => '_extension'
-    );
+    protected $_messageVariables = [
+        'extension' => '_extension',
+    ];
 
     /**
-     * Sets validator options
+     * Sets validator options.
      *
-     * @param  string|array $extension
-     * @param  boolean      $case      If true validation is done case sensitive
+     * @param string|array $extension
+     * @param bool         $case      If true validation is done case sensitive
+     *
      * @return void
      */
     public function __construct($extension, $case = false)
     {
-        $this->_case = (boolean) $case;
+        $this->_case = (bool) $case;
         $this->setExtension($extension);
     }
 
     /**
-     * Returns the set file extension
+     * Returns the set file extension.
      *
-     * @param  boolean $asArray Returns the values as array, when false an concated string is returned
+     * @param bool $asArray Returns the values as array, when false an concated string is returned
+     *
      * @return string
      */
     public function getExtension($asArray = false)
     {
-        $asArray   = (bool) $asArray;
+        $asArray = (bool) $asArray;
         $extension = (string) $this->_extension;
         if ($asArray) {
             $extension = explode(',', $extension);
@@ -99,22 +103,25 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
     }
 
     /**
-     * Sets the file extensions
+     * Sets the file extensions.
      *
-     * @param  string|array $extension The extensions to validate
+     * @param string|array $extension The extensions to validate
+     *
      * @return Zend_Validate_File_Extension Provides a fluent interface
      */
     public function setExtension($extension)
     {
         $this->_extension = null;
         $this->addExtension($extension);
+
         return $this;
     }
 
     /**
-     * Adds the file extensions
+     * Adds the file extensions.
      *
-     * @param  string|array $extension The extensions to add for validation
+     * @param string|array $extension The extensions to add for validation
+     *
      * @return Zend_Validate_File_Extension Provides a fluent interface
      */
     public function addExtension($extension)
@@ -146,20 +153,22 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by Zend_Validate_Interface.
      *
      * Returns true if and only if the fileextension of $value is included in the
      * set extension list
      *
-     * @param  string  $value Real file to check for extension
-     * @param  array   $file  File data from Zend_File_Transfer
-     * @return boolean
+     * @param string $value Real file to check for extension
+     * @param array  $file  File data from Zend_File_Transfer
+     *
+     * @return bool
      */
     public function isValid($value, $file = null)
     {
         // Is file readable ?
         if (!@is_readable($value)) {
             $this->_throw($file, self::NOT_FOUND);
+
             return false;
         }
 
@@ -173,7 +182,7 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
 
         if ($this->_case and (in_array($info['extension'], $extensions))) {
             return true;
-        } else if (!$this->_case) {
+        } elseif (!$this->_case) {
             foreach ($extensions as $extension) {
                 if (strtolower($extension) == strtolower($info['extension'])) {
                     return true;
@@ -182,14 +191,16 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
         }
 
         $this->_throw($file, self::FALSE_EXTENSION);
+
         return false;
     }
 
     /**
-     * Throws an error of the given type
+     * Throws an error of the given type.
      *
-     * @param  string $file
-     * @param  string $errorType
+     * @param string $file
+     * @param string $errorType
+     *
      * @return false
      */
     protected function _throw($file, $errorType)
@@ -199,6 +210,7 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
         }
 
         $this->_error($errorType);
+
         return false;
     }
 }

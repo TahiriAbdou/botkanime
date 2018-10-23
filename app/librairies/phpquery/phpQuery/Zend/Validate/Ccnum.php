@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -14,61 +14,61 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Ccnum.php 8064 2008-02-16 10:58:39Z thomas $
  */
-
 
 /**
  * @see Zend_Validate_Abstract
  */
 require_once 'Zend/Validate/Abstract.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_Ccnum extends Zend_Validate_Abstract
 {
     /**
-     * Validation failure message key for when the value is not of valid length
+     * Validation failure message key for when the value is not of valid length.
      */
-    const LENGTH   = 'ccnumLength';
+    const LENGTH = 'ccnumLength';
 
     /**
-     * Validation failure message key for when the value fails the mod-10 checksum
+     * Validation failure message key for when the value fails the mod-10 checksum.
      */
     const CHECKSUM = 'ccnumChecksum';
 
     /**
-     * Digits filter for input
+     * Digits filter for input.
      *
      * @var Zend_Filter_Digits
      */
     protected static $_filter = null;
 
     /**
-     * Validation failure message template definitions
+     * Validation failure message template definitions.
      *
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::LENGTH   => "'%value%' must contain between 13 and 19 digits",
-        self::CHECKSUM => "Luhn algorithm (mod-10 checksum) failed on '%value%'"
-    );
+        self::CHECKSUM => "Luhn algorithm (mod-10 checksum) failed on '%value%'",
+    ];
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by Zend_Validate_Interface.
      *
      * Returns true if and only if $value follows the Luhn algorithm (mod-10 checksum)
      *
-     * @param  string $value
-     * @return boolean
+     * @param string $value
+     *
+     * @return bool
      */
     public function isValid($value)
     {
@@ -88,10 +88,11 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
 
         if ($length < 13 || $length > 19) {
             $this->_error(self::LENGTH);
+
             return false;
         }
 
-        $sum    = 0;
+        $sum = 0;
         $weight = 2;
 
         for ($i = $length - 2; $i >= 0; $i--) {
@@ -102,10 +103,10 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
 
         if ((10 - $sum % 10) % 10 != $valueFiltered[$length - 1]) {
             $this->_error(self::CHECKSUM, $valueFiltered);
+
             return false;
         }
 
         return true;
     }
-
 }

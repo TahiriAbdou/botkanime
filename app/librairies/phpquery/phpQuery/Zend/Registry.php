@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -13,9 +13,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Registry
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Registry.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
@@ -23,7 +24,7 @@
  * Generic storage class helps to manage global data.
  *
  * @category   Zend
- * @package    Zend_Registry
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -31,12 +32,14 @@ class Zend_Registry extends ArrayObject
 {
     /**
      * Class name of the singleton registry object.
+     *
      * @var string
      */
     private static $_registryClassName = 'Zend_Registry';
 
     /**
      * Registry object provides storage for shared objects.
+     *
      * @var Zend_Registry
      */
     private static $_registry = null;
@@ -59,14 +62,17 @@ class Zend_Registry extends ArrayObject
      * Set the default registry instance to a specified instance.
      *
      * @param Zend_Registry $registry An object instance of type Zend_Registry,
-     *   or a subclass.
-     * @return void
+     *                                or a subclass.
+     *
      * @throws Zend_Exception if registry is already initialized.
+     *
+     * @return void
      */
-    public static function setInstance(Zend_Registry $registry)
+    public static function setInstance(self $registry)
     {
         if (self::$_registry !== null) {
             require_once 'Zend/Exception.php';
+
             throw new Zend_Exception('Registry is already initialized');
         }
 
@@ -90,20 +96,24 @@ class Zend_Registry extends ArrayObject
      * for the next time you instantiate.
      *
      * @param string $registryClassName
-     * @return void
+     *
      * @throws Zend_Exception if the registry is initialized or if the
-     *   class name is not valid.
+     *                        class name is not valid.
+     *
+     * @return void
      */
     public static function setClassName($registryClassName = 'Zend_Registry')
     {
         if (self::$_registry !== null) {
             require_once 'Zend/Exception.php';
+
             throw new Zend_Exception('Registry is already initialized');
         }
 
         if (!is_string($registryClassName)) {
             require_once 'Zend/Exception.php';
-            throw new Zend_Exception("Argument is not a class name");
+
+            throw new Zend_Exception('Argument is not a class name');
         }
 
         /**
@@ -118,6 +128,7 @@ class Zend_Registry extends ArrayObject
     /**
      * Unset the default registry instance.
      * Primarily used in tearDown() in unit tests.
+     *
      * @returns void
      */
     public static function _unsetInstance()
@@ -133,8 +144,10 @@ class Zend_Registry extends ArrayObject
      * static instance stored in the class.
      *
      * @param string $index - get the value associated with $index
-     * @return mixed
+     *
      * @throws Zend_Exception if no entry is registerd for $index.
+     *
+     * @return mixed
      */
     public static function get($index)
     {
@@ -142,6 +155,7 @@ class Zend_Registry extends ArrayObject
 
         if (!$instance->offsetExists($index)) {
             require_once 'Zend/Exception.php';
+
             throw new Zend_Exception("No entry is registered for key '$index'");
         }
 
@@ -156,8 +170,9 @@ class Zend_Registry extends ArrayObject
      * static instance stored in the class.
      *
      * @param string $index The location in the ArrayObject in which to store
-     *   the value.
-     * @param mixed $value The object to store in the ArrayObject.
+     *                      the value.
+     * @param mixed  $value The object to store in the ArrayObject.
+     *
      * @return void
      */
     public static function set($index, $value)
@@ -170,14 +185,16 @@ class Zend_Registry extends ArrayObject
      * Returns TRUE if the $index is a named value in the registry,
      * or FALSE if $index was not found in the registry.
      *
-     * @param  string $index
-     * @return boolean
+     * @param string $index
+     *
+     * @return bool
      */
     public static function isRegistered($index)
     {
         if (self::$_registry === null) {
             return false;
         }
+
         return self::$_registry->offsetExists($index);
     }
 
@@ -191,5 +208,4 @@ class Zend_Registry extends ArrayObject
     {
         return array_key_exists($index, $this);
     }
-
 }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -14,40 +14,41 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Barcode.php 8211 2008-02-20 14:29:24Z darby $
  */
-
 
 /**
  * @see Zend_Validate_Abstract
  */
 require_once 'Zend/Validate/Abstract.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_Barcode extends Zend_Validate_Abstract
 {
     /**
-     * Barcode validator
+     * Barcode validator.
      *
      * @var Zend_Validate_Abstract
      */
     protected $_barcodeValidator;
 
     /**
-     * Generates the standard validator object
+     * Generates the standard validator object.
      *
-     * @param  string $barcodeType - Barcode validator to use
-     * @return void
+     * @param string $barcodeType - Barcode validator to use
+     *
      * @throws Zend_Validate_Exception
+     *
+     * @return void
      */
     public function __construct($barcodeType)
     {
@@ -55,11 +56,13 @@ class Zend_Validate_Barcode extends Zend_Validate_Abstract
     }
 
     /**
-     * Sets a new barcode validator
+     * Sets a new barcode validator.
      *
-     * @param  string $barcodeType - Barcode validator to use
-     * @return void
+     * @param string $barcodeType - Barcode validator to use
+     *
      * @throws Zend_Validate_Exception
+     *
+     * @return void
      */
     public function setType($barcodeType)
     {
@@ -74,26 +77,28 @@ class Zend_Validate_Barcode extends Zend_Validate_Abstract
                 break;
             default:
                 require_once 'Zend/Validate/Exception.php';
+
                 throw new Zend_Validate_Exception("Barcode type '$barcodeType' is not supported'");
                 break;
         }
 
-        require_once 'Zend/Validate/Barcode/' . $className . '.php';
+        require_once 'Zend/Validate/Barcode/'.$className.'.php';
 
-        $class = 'Zend_Validate_Barcode_' . $className;
-        $this->_barcodeValidator = new $class;
+        $class = 'Zend_Validate_Barcode_'.$className;
+        $this->_barcodeValidator = new $class();
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by Zend_Validate_Interface.
      *
      * Returns true if and only if $value contains a valid barcode
      *
-     * @param  string $value
-     * @return boolean
+     * @param string $value
+     *
+     * @return bool
      */
     public function isValid($value)
     {
-        return call_user_func(array($this->_barcodeValidator, 'isValid'), $value);
+        return call_user_func([$this->_barcodeValidator, 'isValid'], $value);
     }
 }

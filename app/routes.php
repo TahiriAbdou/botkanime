@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/okanime/series','OkanimeController@series');
+Route::get('/okanime/series', 'OkanimeController@series');
 
-Route::get('/session',function(){
-    return Session::all(); 
+Route::get('/session', function () {
+    return Session::all();
 });
