@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -13,16 +13,15 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage CookieJar
+ *
  * @version    $Id: CookieJar.php 9098 2008-03-30 19:29:10Z thomas $
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com/)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-
-require_once "Zend/Uri.php";
-require_once "Zend/Http/Cookie.php";
-require_once "Zend/Http/Response.php";
+require_once 'Zend/Uri.php';
+require_once 'Zend/Http/Cookie.php';
+require_once 'Zend/Http/Response.php';
 
 /**
  * A Zend_Http_CookieJar object is designed to contain and maintain HTTP cookies, and should
@@ -41,35 +40,31 @@ require_once "Zend/Http/Response.php";
  * (by passing Zend_Http_CookieJar::COOKIE_STRING_CONCAT).
  *
  * @link       http://wp.netscape.com/newsref/std/cookie_spec.html for some specs.
- * 
+ *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage CookieJar
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com/)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Http_CookieJar
 {
     /**
-     * Return cookie(s) as a Zend_Http_Cookie object
-     *
+     * Return cookie(s) as a Zend_Http_Cookie object.
      */
     const COOKIE_OBJECT = 0;
 
     /**
-     * Return cookie(s) as a string (suitable for sending in an HTTP request)
-     *
+     * Return cookie(s) as a string (suitable for sending in an HTTP request).
      */
     const COOKIE_STRING_ARRAY = 1;
 
     /**
-     * Return all cookies as one long string (suitable for sending in an HTTP request)
-     *
+     * Return all cookies as one long string (suitable for sending in an HTTP request).
      */
     const COOKIE_STRING_CONCAT = 2;
 
     /**
-     * Array storing cookies
+     * Array storing cookies.
      *
      * Cookies are stored according to domain and path:
      * $cookies
@@ -85,14 +80,14 @@ class Zend_Http_CookieJar
      *
      * @var array
      */
-    protected $cookies = array();
+    protected $cookies = [];
 
     /**
-     * Construct a new CookieJar object
-     *
+     * Construct a new CookieJar object.
      */
     public function __construct()
-    { }
+    {
+    }
 
     /**
      * Add a cookie to the jar. Cookie should be passed either as a Zend_Http_Cookie object
@@ -110,11 +105,16 @@ class Zend_Http_CookieJar
         if ($cookie instanceof Zend_Http_Cookie) {
             $domain = $cookie->getDomain();
             $path = $cookie->getPath();
-            if (! isset($this->cookies[$domain])) $this->cookies[$domain] = array();
-            if (! isset($this->cookies[$domain][$path])) $this->cookies[$domain][$path] = array();
+            if (!isset($this->cookies[$domain])) {
+                $this->cookies[$domain] = [];
+            }
+            if (!isset($this->cookies[$domain][$path])) {
+                $this->cookies[$domain][$path] = [];
+            }
             $this->cookies[$domain][$path][$cookie->getName()] = $cookie;
         } else {
             require_once 'Zend/Http/Exception.php';
+
             throw new Zend_Http_Exception('Supplient argument is not a valid cookie string or object');
         }
     }
@@ -123,15 +123,16 @@ class Zend_Http_CookieJar
      * Parse an HTTP response, adding all the cookies set in that response
      * to the cookie jar.
      *
-     * @param Zend_Http_Response $response
-     * @param Zend_Uri_Http|string $ref_uri Requested URI
+     * @param Zend_Http_Response   $response
+     * @param Zend_Uri_Http|string $ref_uri  Requested URI
      */
     public function addCookiesFromResponse($response, $ref_uri)
     {
-        if (! $response instanceof Zend_Http_Response) {
-            require_once 'Zend/Http/Exception.php';        
-            throw new Zend_Http_Exception('$response is expected to be a Response object, ' .
-                gettype($response) . ' was passed');
+        if (!$response instanceof Zend_Http_Response) {
+            require_once 'Zend/Http/Exception.php';
+
+            throw new Zend_Http_Exception('$response is expected to be a Response object, '.
+                gettype($response).' was passed');
         }
 
         $cookie_hdrs = $response->getHeader('Set-Cookie');
@@ -146,14 +147,16 @@ class Zend_Http_CookieJar
     }
 
     /**
-     * Get all cookies in the cookie jar as an array
+     * Get all cookies in the cookie jar as an array.
      *
      * @param int $ret_as Whether to return cookies as objects of Zend_Http_Cookie or as strings
+     *
      * @return array|string
      */
     public function getAllCookies($ret_as = self::COOKIE_OBJECT)
     {
         $cookies = $this->_flattenCookiesArray($this->cookies, $ret_as);
+
         return $cookies;
     }
 
@@ -162,25 +165,31 @@ class Zend_Http_CookieJar
      * whether session cookies should be sent or not, and the time to consider as "now" when
      * checking cookie expiry time.
      *
-     * @param string|Zend_Uri_Http $uri URI to check against (secure, domain, path)
-     * @param boolean $matchSessionCookies Whether to send session cookies
-     * @param int $ret_as Whether to return cookies as objects of Zend_Http_Cookie or as strings
-     * @param int $now Override the current time when checking for expiry time
+     * @param string|Zend_Uri_Http $uri                 URI to check against (secure, domain, path)
+     * @param bool                 $matchSessionCookies Whether to send session cookies
+     * @param int                  $ret_as              Whether to return cookies as objects of Zend_Http_Cookie or as strings
+     * @param int                  $now                 Override the current time when checking for expiry time
+     *
      * @return array|string
      */
     public function getMatchingCookies($uri, $matchSessionCookies = true,
         $ret_as = self::COOKIE_OBJECT, $now = null)
     {
-        if (is_string($uri)) $uri = Zend_Uri::factory($uri);
-        if (! $uri instanceof Zend_Uri_Http) {
-            require_once 'Zend/Http/Exception.php';    
-            throw new Zend_Http_Exception("Invalid URI string or object passed");
+        if (is_string($uri)) {
+            $uri = Zend_Uri::factory($uri);
+        }
+        if (!$uri instanceof Zend_Uri_Http) {
+            require_once 'Zend/Http/Exception.php';
+
+            throw new Zend_Http_Exception('Invalid URI string or object passed');
         }
 
         // Set path
         $path = $uri->getPath();
         $path = substr($path, 0, strrpos($path, '/'));
-        if (! $path) $path = '/';
+        if (!$path) {
+            $path = '/';
+        }
 
         // First, reduce the array of cookies to only those matching domain and path
         $cookies = $this->_matchDomain($uri->getHost());
@@ -188,10 +197,12 @@ class Zend_Http_CookieJar
         $cookies = $this->_flattenCookiesArray($cookies, self::COOKIE_OBJECT);
 
         // Next, run Cookie->match on all cookies to check secure, time and session mathcing
-        $ret = array();
-        foreach ($cookies as $cookie)
-            if ($cookie->match($uri, $matchSessionCookies, $now))
+        $ret = [];
+        foreach ($cookies as $cookie) {
+            if ($cookie->match($uri, $matchSessionCookies, $now)) {
                 $ret[] = $cookie;
+            }
+        }
 
         // Now, use self::_flattenCookiesArray again - only to convert to the return format ;)
         $ret = $this->_flattenCookiesArray($ret, $ret_as);
@@ -200,11 +211,12 @@ class Zend_Http_CookieJar
     }
 
     /**
-     * Get a specific cookie according to a URI and name
+     * Get a specific cookie according to a URI and name.
      *
-     * @param Zend_Uri_Http|string $uri The uri (domain and path) to match
-     * @param string $cookie_name The cookie's name
-     * @param int $ret_as Whether to return cookies as objects of Zend_Http_Cookie or as strings
+     * @param Zend_Uri_Http|string $uri         The uri (domain and path) to match
+     * @param string               $cookie_name The cookie's name
+     * @param int                  $ret_as      Whether to return cookies as objects of Zend_Http_Cookie or as strings
+     *
      * @return Zend_Http_Cookie|string
      */
     public function getCookie($uri, $cookie_name, $ret_as = self::COOKIE_OBJECT)
@@ -213,15 +225,18 @@ class Zend_Http_CookieJar
             $uri = Zend_Uri::factory($uri);
         }
 
-        if (! $uri instanceof Zend_Uri_Http) {
+        if (!$uri instanceof Zend_Uri_Http) {
             require_once 'Zend/Http/Exception.php';
+
             throw new Zend_Http_Exception('Invalid URI specified');
         }
 
         // Get correct cookie path
         $path = $uri->getPath();
         $path = substr($path, 0, strrpos($path, '/'));
-        if (! $path) $path = '/';
+        if (!$path) {
+            $path = '/';
+        }
 
         if (isset($this->cookies[$uri->getHost()][$path][$cookie_name])) {
             $cookie = $this->cookies[$uri->getHost()][$path][$cookie_name];
@@ -238,6 +253,7 @@ class Zend_Http_CookieJar
 
                 default:
                     require_once 'Zend/Http/Exception.php';
+
                     throw new Zend_Http_Exception("Invalid value passed for \$ret_as: {$ret_as}");
                     break;
             }
@@ -248,15 +264,17 @@ class Zend_Http_CookieJar
 
     /**
      * Helper function to recursivly flatten an array. Shoud be used when exporting the
-     * cookies array (or parts of it)
+     * cookies array (or parts of it).
      *
      * @param Zend_Http_Cookie|array $ptr
-     * @param int $ret_as What value to return
+     * @param int                    $ret_as What value to return
+     *
      * @return array|string
      */
-    protected function _flattenCookiesArray($ptr, $ret_as = self::COOKIE_OBJECT) {
+    protected function _flattenCookiesArray($ptr, $ret_as = self::COOKIE_OBJECT)
+    {
         if (is_array($ptr)) {
-            $ret = ($ret_as == self::COOKIE_STRING_CONCAT ? '' : array());
+            $ret = ($ret_as == self::COOKIE_STRING_CONCAT ? '' : []);
             foreach ($ptr as $item) {
                 if ($ret_as == self::COOKIE_STRING_CONCAT) {
                     $ret .= $this->_flattenCookiesArray($item, $ret_as);
@@ -264,11 +282,12 @@ class Zend_Http_CookieJar
                     $ret = array_merge($ret, $this->_flattenCookiesArray($item, $ret_as));
                 }
             }
+
             return $ret;
         } elseif ($ptr instanceof Zend_Http_Cookie) {
             switch ($ret_as) {
                 case self::COOKIE_STRING_ARRAY:
-                    return array($ptr->__toString());
+                    return [$ptr->__toString()];
                     break;
 
                 case self::COOKIE_STRING_CONCAT:
@@ -277,51 +296,59 @@ class Zend_Http_CookieJar
 
                 case self::COOKIE_OBJECT:
                 default:
-                    return array($ptr);
+                    return [$ptr];
                     break;
             }
         }
-
-        return null;
     }
 
     /**
-     * Return a subset of the cookies array matching a specific domain
+     * Return a subset of the cookies array matching a specific domain.
      *
      * Returned array is actually an array of pointers to items in the $this->cookies array.
      *
      * @param string $domain
+     *
      * @return array
      */
-    protected function _matchDomain($domain) {
-        $ret = array();
+    protected function _matchDomain($domain)
+    {
+        $ret = [];
 
         foreach (array_keys($this->cookies) as $cdom) {
-            $regex = "/" . preg_quote($cdom, "/") . "$/i";
-            if (preg_match($regex, $domain)) $ret[$cdom] = &$this->cookies[$cdom];
+            $regex = '/'.preg_quote($cdom, '/').'$/i';
+            if (preg_match($regex, $domain)) {
+                $ret[$cdom] = &$this->cookies[$cdom];
+            }
         }
 
         return $ret;
     }
 
     /**
-     * Return a subset of a domain-matching cookies that also match a specified path
+     * Return a subset of a domain-matching cookies that also match a specified path.
      *
      * Returned array is actually an array of pointers to items in the $passed array.
      *
-     * @param array $dom_array
+     * @param array  $dom_array
      * @param string $path
+     *
      * @return array
      */
-    protected function _matchPath($domains, $path) {
-        $ret = array();
-        if (substr($path, -1) != '/') $path .= '/';
+    protected function _matchPath($domains, $path)
+    {
+        $ret = [];
+        if (substr($path, -1) != '/') {
+            $path .= '/';
+        }
 
         foreach ($domains as $dom => $paths_array) {
             foreach (array_keys($paths_array) as $cpath) {
-                $regex = "|^" . preg_quote($cpath, "|") . "|i";
+                $regex = '|^'.preg_quote($cpath, '|').'|i';
                 if (preg_match($regex, $path)) {
-                    if (! isset($ret[$dom])) $ret[$dom] = array();
+                    if (!isset($ret[$dom])) {
+                        $ret[$dom] = [];
+                    }
                     $ret[$dom][$cpath] = &$paths_array[$cpath];
                 }
             }
@@ -336,15 +363,18 @@ class Zend_Http_CookieJar
      * considered as the requested URI for setting default domain and path
      * of the cookie.
      *
-     * @param Zend_Http_Response $response HTTP Response object
-     * @param Zend_Uri_Http|string $uri The requested URI
+     * @param Zend_Http_Response   $response HTTP Response object
+     * @param Zend_Uri_Http|string $uri      The requested URI
+     *
      * @return Zend_Http_CookieJar
+     *
      * @todo Add the $uri functionality.
      */
     public static function fromResponse(Zend_Http_Response $response, $ref_uri)
     {
         $jar = new self();
         $jar->addCookiesFromResponse($response, $ref_uri);
+
         return $jar;
     }
 }

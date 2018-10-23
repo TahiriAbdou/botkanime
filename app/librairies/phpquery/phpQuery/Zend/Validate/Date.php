@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -14,72 +14,72 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Date.php 11046 2008-08-25 13:58:52Z thomas $
  */
-
 
 /**
  * @see Zend_Validate_Abstract
  */
 require_once 'Zend/Validate/Abstract.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_Date extends Zend_Validate_Abstract
 {
     /**
-     * Validation failure message key for when the value does not follow the YYYY-MM-DD format
+     * Validation failure message key for when the value does not follow the YYYY-MM-DD format.
      */
     const NOT_YYYY_MM_DD = 'dateNotYYYY-MM-DD';
 
     /**
-     * Validation failure message key for when the value does not appear to be a valid date
+     * Validation failure message key for when the value does not appear to be a valid date.
      */
-    const INVALID        = 'dateInvalid';
+    const INVALID = 'dateInvalid';
 
     /**
-     * Validation failure message key for when the value does not fit the given dateformat or locale
+     * Validation failure message key for when the value does not fit the given dateformat or locale.
      */
-    const FALSEFORMAT    = 'dateFalseFormat';
+    const FALSEFORMAT = 'dateFalseFormat';
 
     /**
-     * Validation failure message template definitions
+     * Validation failure message template definitions.
      *
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::NOT_YYYY_MM_DD => "'%value%' is not of the format YYYY-MM-DD",
         self::INVALID        => "'%value%' does not appear to be a valid date",
-        self::FALSEFORMAT    => "'%value%' does not fit given date format"
-    );
+        self::FALSEFORMAT    => "'%value%' does not fit given date format",
+    ];
 
     /**
-     * Optional format
+     * Optional format.
      *
      * @var string|null
      */
     protected $_format;
 
     /**
-     * Optional locale
+     * Optional locale.
      *
      * @var string|Zend_Locale|null
      */
     protected $_locale;
 
     /**
-     * Sets validator options
+     * Sets validator options.
      *
-     * @param  string             $format OPTIONAL
-     * @param  string|Zend_Locale $locale OPTIONAL
+     * @param string             $format OPTIONAL
+     * @param string|Zend_Locale $locale OPTIONAL
+     *
      * @return void
      */
     public function __construct($format = null, $locale = null)
@@ -89,7 +89,7 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
     }
 
     /**
-     * Returns the locale option
+     * Returns the locale option.
      *
      * @return string|Zend_Locale|null
      */
@@ -99,15 +99,17 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
     }
 
     /**
-     * Sets the locale option
+     * Sets the locale option.
      *
-     * @param  string|Zend_Locale $locale
+     * @param string|Zend_Locale $locale
+     *
      * @return Zend_Validate_Date provides a fluent interface
      */
     public function setLocale($locale = null)
     {
         if ($locale === null) {
             $this->_locale = null;
+
             return $this;
         }
 
@@ -115,6 +117,7 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
         if (!Zend_Locale::isLocale($locale, true)) {
             if (!Zend_Locale::isLocale($locale, false)) {
                 require_once 'Zend/Validate/Exception.php';
+
                 throw new Zend_Validate_Exception("The locale '$locale' is no known locale");
             }
 
@@ -122,11 +125,12 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
         }
 
         $this->_locale = (string) $locale;
+
         return $this;
     }
 
     /**
-     * Returns the locale option
+     * Returns the locale option.
      *
      * @return string|null
      */
@@ -136,26 +140,29 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
     }
 
     /**
-     * Sets the format option
+     * Sets the format option.
      *
-     * @param  string $format
+     * @param string $format
+     *
      * @return Zend_Validate_Date provides a fluent interface
      */
     public function setFormat($format = null)
     {
         $this->_format = $format;
+
         return $this;
     }
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by Zend_Validate_Interface.
      *
      * Returns true if $value is a valid date of the format YYYY-MM-DD
      * If optional $format or $locale is set the date format is checked
      * according to Zend_Date, see Zend_Date::isDate()
      *
-     * @param  string $value
-     * @return boolean
+     * @param string $value
+     *
+     * @return bool
      */
     public function isValid($value)
     {
@@ -171,11 +178,13 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
                 } else {
                     $this->_error(self::INVALID);
                 }
+
                 return false;
             }
         } else {
             if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $valueString)) {
                 $this->_error(self::NOT_YYYY_MM_DD);
+
                 return false;
             }
 
@@ -183,6 +192,7 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
 
             if (!checkdate($month, $day, $year)) {
                 $this->_error(self::INVALID);
+
                 return false;
             }
         }
@@ -191,18 +201,19 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
     }
 
     /**
-     * Check if the given date fits the given format
+     * Check if the given date fits the given format.
      *
-     * @param  string $value  Date to check
-     * @return boolean False when date does not fit the format
+     * @param string $value Date to check
+     *
+     * @return bool False when date does not fit the format
      */
     private function _checkFormat($value)
     {
         try {
             require_once 'Zend/Locale/Format.php';
-            $parsed = Zend_Locale_Format::getDate($value, array(
+            $parsed = Zend_Locale_Format::getDate($value, [
                                                   'date_format' => $this->_format, 'format_type' => 'iso',
-                                                  'fix_date' => false));
+                                                  'fix_date'    => false, ]);
             if (isset($parsed['year']) and ((strpos(strtoupper($this->_format), 'YY') !== false) and
                 (strpos(strtoupper($this->_format), 'YYYY') === false))) {
                 $parsed['year'] = Zend_Date::_century($parsed['year']);

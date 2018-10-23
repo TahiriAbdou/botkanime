@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Zend Framework
+ * Zend Framework.
  *
  * LICENSE
  *
@@ -14,12 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Hostname.php 9195 2008-04-10 17:35:30Z jokke $
  */
-
 
 /**
  * @see Zend_Validate_Abstract
@@ -47,26 +47,25 @@ require_once 'Zend/Validate/Ip.php';
  * to allow users to test entering UTF-8 characters in a form.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_Hostname extends Zend_Validate_Abstract
 {
-
-    const IP_ADDRESS_NOT_ALLOWED  = 'hostnameIpAddressNotAllowed';
-    const UNKNOWN_TLD             = 'hostnameUnknownTld';
-    const INVALID_DASH            = 'hostnameDashCharacter';
+    const IP_ADDRESS_NOT_ALLOWED = 'hostnameIpAddressNotAllowed';
+    const UNKNOWN_TLD = 'hostnameUnknownTld';
+    const INVALID_DASH = 'hostnameDashCharacter';
     const INVALID_HOSTNAME_SCHEMA = 'hostnameInvalidHostnameSchema';
-    const UNDECIPHERABLE_TLD      = 'hostnameUndecipherableTld';
-    const INVALID_HOSTNAME        = 'hostnameInvalidHostname';
-    const INVALID_LOCAL_NAME      = 'hostnameInvalidLocalName';
-    const LOCAL_NAME_NOT_ALLOWED  = 'hostnameLocalNameNotAllowed';
+    const UNDECIPHERABLE_TLD = 'hostnameUndecipherableTld';
+    const INVALID_HOSTNAME = 'hostnameInvalidHostname';
+    const INVALID_LOCAL_NAME = 'hostnameInvalidLocalName';
+    const LOCAL_NAME_NOT_ALLOWED = 'hostnameLocalNameNotAllowed';
 
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::IP_ADDRESS_NOT_ALLOWED  => "'%value%' appears to be an IP address, but IP addresses are not allowed",
         self::UNKNOWN_TLD             => "'%value%' appears to be a DNS hostname but cannot match TLD against known list",
         self::INVALID_DASH            => "'%value%' appears to be a DNS hostname but contains a dash (-) in an invalid position",
@@ -74,71 +73,72 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
         self::UNDECIPHERABLE_TLD      => "'%value%' appears to be a DNS hostname but cannot extract TLD part",
         self::INVALID_HOSTNAME        => "'%value%' does not match the expected structure for a DNS hostname",
         self::INVALID_LOCAL_NAME      => "'%value%' does not appear to be a valid local network name",
-        self::LOCAL_NAME_NOT_ALLOWED  => "'%value%' appears to be a local network name but local network names are not allowed"
-    );
+        self::LOCAL_NAME_NOT_ALLOWED  => "'%value%' appears to be a local network name but local network names are not allowed",
+    ];
 
     /**
      * @var array
      */
-    protected $_messageVariables = array(
-        'tld' => '_tld'
-    );
+    protected $_messageVariables = [
+        'tld' => '_tld',
+    ];
 
     /**
-     * Allows Internet domain names (e.g., example.com)
+     * Allows Internet domain names (e.g., example.com).
      */
-    const ALLOW_DNS   = 1;
+    const ALLOW_DNS = 1;
 
     /**
-     * Allows IP addresses
+     * Allows IP addresses.
      */
-    const ALLOW_IP    = 2;
+    const ALLOW_IP = 2;
 
     /**
-     * Allows local network names (e.g., localhost, www.localdomain)
+     * Allows local network names (e.g., localhost, www.localdomain).
      */
     const ALLOW_LOCAL = 4;
 
     /**
-     * Allows all types of hostnames
+     * Allows all types of hostnames.
      */
-    const ALLOW_ALL   = 7;
+    const ALLOW_ALL = 7;
 
     /**
-     * Whether IDN domains are validated
+     * Whether IDN domains are validated.
      *
-     * @var boolean
+     * @var bool
      */
     private $_validateIdn = true;
 
     /**
-     * Whether TLDs are validated against a known list
+     * Whether TLDs are validated against a known list.
      *
-     * @var boolean
+     * @var bool
      */
     private $_validateTld = true;
 
     /**
-     * Bit field of ALLOW constants; determines which types of hostnames are allowed
+     * Bit field of ALLOW constants; determines which types of hostnames are allowed.
      *
-     * @var integer
+     * @var int
      */
     protected $_allow;
 
     /**
-     * Bit field of CHECK constants; determines what additional hostname checks to make
+     * Bit field of CHECK constants; determines what additional hostname checks to make.
      *
      * @var unknown_type
      */
     // protected $_check;
 
     /**
-     * Array of valid top-level-domains
+     * Array of valid top-level-domains.
      *
      * @var array
+     *
      * @see ftp://data.iana.org/TLD/tlds-alpha-by-domain.txt  List of all TLDs by domain
      */
-    protected $_validTlds = array(
+    protected $_validTlds = [
         'ac', 'ad', 'ae', 'aero', 'af', 'ag', 'ai', 'al', 'am', 'an', 'ao',
         'aq', 'ar', 'arpa', 'as', 'asia', 'at', 'au', 'aw', 'ax', 'az', 'ba', 'bb',
         'bd', 'be', 'bf', 'bg', 'bh', 'bi', 'biz', 'bj', 'bm', 'bn', 'bo',
@@ -163,8 +163,8 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
         'tk', 'tl', 'tm', 'tn', 'to', 'tp', 'tr', 'travel', 'tt', 'tv', 'tw',
         'tz', 'ua', 'ug', 'uk', 'um', 'us', 'uy', 'uz', 'va', 'vc', 've',
         'vg', 'vi', 'vn', 'vu', 'wf', 'ws', 'ye', 'yt', 'yu', 'za', 'zm',
-        'zw'
-        );
+        'zw',
+        ];
 
     /**
      * @var string
@@ -172,13 +172,15 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
     protected $_tld;
 
     /**
-     * Sets validator options
+     * Sets validator options.
      *
-     * @param integer          $allow       OPTIONAL Set what types of hostname to allow (default ALLOW_DNS)
-     * @param boolean          $validateIdn OPTIONAL Set whether IDN domains are validated (default true)
-     * @param boolean          $validateTld OPTIONAL Set whether the TLD element of a hostname is validated (default true)
+     * @param int              $allow       OPTIONAL Set what types of hostname to allow (default ALLOW_DNS)
+     * @param bool             $validateIdn OPTIONAL Set whether IDN domains are validated (default true)
+     * @param bool             $validateTld OPTIONAL Set whether the TLD element of a hostname is validated (default true)
      * @param Zend_Validate_Ip $ipValidator OPTIONAL
+     *
      * @return void
+     *
      * @see http://www.iana.org/cctld/specifications-policies-cctlds-01apr02.htm  Technical Specifications for ccTLDs
      */
     public function __construct($allow = self::ALLOW_DNS, $validateIdn = true, $validateTld = true, Zend_Validate_Ip $ipValidator = null)
@@ -195,6 +197,7 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
 
     /**
      * @param Zend_Validate_Ip $ipValidator OPTIONAL
+     *
      * @return void;
      */
     public function setIpValidator(Zend_Validate_Ip $ipValidator = null)
@@ -206,9 +209,9 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
     }
 
     /**
-     * Returns the allow option
+     * Returns the allow option.
      *
-     * @return integer
+     * @return int
      */
     public function getAllow()
     {
@@ -216,45 +219,48 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
     }
 
     /**
-     * Sets the allow option
+     * Sets the allow option.
      *
-     * @param  integer $allow
+     * @param int $allow
+     *
      * @return Zend_Validate_Hostname Provides a fluent interface
      */
     public function setAllow($allow)
     {
         $this->_allow = $allow;
+
         return $this;
     }
 
     /**
-     * Set whether IDN domains are validated
+     * Set whether IDN domains are validated.
      *
      * This only applies when DNS hostnames are validated
      *
-     * @param boolean $allowed Set allowed to true to validate IDNs, and false to not validate them
+     * @param bool $allowed Set allowed to true to validate IDNs, and false to not validate them
      */
-    public function setValidateIdn ($allowed)
+    public function setValidateIdn($allowed)
     {
         $this->_validateIdn = (bool) $allowed;
     }
 
     /**
-     * Set whether the TLD element of a hostname is validated
+     * Set whether the TLD element of a hostname is validated.
      *
      * This only applies when DNS hostnames are validated
      *
-     * @param boolean $allowed Set allowed to true to validate TLDs, and false to not validate them
+     * @param bool $allowed Set allowed to true to validate TLDs, and false to not validate them
      */
-    public function setValidateTld ($allowed)
+    public function setValidateTld($allowed)
     {
         $this->_validateTld = (bool) $allowed;
     }
 
     /**
-     * Sets the check option
+     * Sets the check option.
      *
-     * @param  integer $check
+     * @param int $check
+     *
      * @return Zend_Validate_Hostname Provides a fluent interface
      */
     /*
@@ -266,13 +272,15 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
      */
 
     /**
-     * Defined by Zend_Validate_Interface
+     * Defined by Zend_Validate_Interface.
      *
      * Returns true if and only if the $value is a valid hostname with respect to the current allow option
      *
-     * @param  string $value
+     * @param string $value
+     *
      * @throws Zend_Validate_Exception if a fatal error occurs for validation process
-     * @return boolean
+     *
+     * @return bool
      */
     public function isValid($value)
     {
@@ -284,8 +292,9 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
         if ($this->_ipValidator->setTranslator($this->getTranslator())->isValid($valueString)) {
             if (!($this->_allow & self::ALLOW_IP)) {
                 $this->_error(self::IP_ADDRESS_NOT_ALLOWED);
+
                 return false;
-            } else{
+            } else {
                 return true;
             }
         }
@@ -298,7 +307,6 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
             do {
                 // First check TLD
                 if (preg_match('/([a-z]{2,10})$/i', end($domainParts), $matches)) {
-
                     reset($domainParts);
 
                     // Hostname characters are: *(label dot)(label dot label); max 254 chars
@@ -317,25 +325,26 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
                     }
 
                     /**
-                     * Match against IDN hostnames
+                     * Match against IDN hostnames.
+                     *
                      * @see Zend_Validate_Hostname_Interface
                      */
                     $labelChars = 'a-z0-9';
                     $utf8 = false;
-                    $classFile = 'Zend/Validate/Hostname/' . ucfirst($this->_tld) . '.php';
+                    $classFile = 'Zend/Validate/Hostname/'.ucfirst($this->_tld).'.php';
                     if ($this->_validateIdn) {
                         if (Zend_Loader::isReadable($classFile)) {
 
                             // Load additional characters
-                            $className = 'Zend_Validate_Hostname_' . ucfirst($this->_tld);
+                            $className = 'Zend_Validate_Hostname_'.ucfirst($this->_tld);
                             Zend_Loader::loadClass($className);
-                            $labelChars .= call_user_func(array($className, 'getCharacters'));
+                            $labelChars .= call_user_func([$className, 'getCharacters']);
                             $utf8 = true;
                         }
                     }
 
                     // Keep label regex short to avoid issues with long patterns when matching IDN hostnames
-                    $regexLabel = '/^[' . $labelChars . '\x2d]{1,63}$/i';
+                    $regexLabel = '/^['.$labelChars.'\x2d]{1,63}$/i';
                     if ($utf8) {
                         $regexLabel .= 'u';
                     }
@@ -348,7 +357,6 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
                         if (strpos($domainPart, '-') === 0 ||
                         (strlen($domainPart) > 2 && strpos($domainPart, '-', 2) == 2 && strpos($domainPart, '-', 3) == 3) ||
                         strrpos($domainPart, '-') === strlen($domainPart) - 1) {
-
                             $this->_error(self::INVALID_DASH);
                             $status = false;
                             break 2;
@@ -358,10 +366,12 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
                         $status = @preg_match($regexLabel, $domainPart);
                         if ($status === false) {
                             /**
-                             * Regex error
+                             * Regex error.
+                             *
                              * @see Zend_Validate_Exception
                              */
                             require_once 'Zend/Validate/Exception.php';
+
                             throw new Zend_Validate_Exception('Internal error: DNS validation failed');
                         } elseif ($status === 0) {
                             $valid = false;
@@ -373,7 +383,6 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
                         $this->_error(self::INVALID_HOSTNAME_SCHEMA);
                         $status = false;
                     }
-
                 } else {
                     // Hostname not long enough
                     $this->_error(self::UNDECIPHERABLE_TLD);
@@ -395,10 +404,12 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
         $status = @preg_match($regexLocal, $valueString);
         if (false === $status) {
             /**
-             * Regex error
+             * Regex error.
+             *
              * @see Zend_Validate_Exception
              */
             require_once 'Zend/Validate/Exception.php';
+
             throw new Zend_Validate_Exception('Internal error: local network name validation failed');
         }
 
@@ -422,7 +433,7 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
         return false;
     }
 
-    /**
+    /*
      * Throws an exception if a regex for $type does not exist
      *
      * @param  string $type
@@ -440,5 +451,4 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
         return $this;
     }
      */
-
 }
